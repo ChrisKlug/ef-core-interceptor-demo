@@ -1,0 +1,36 @@
+@page
+@model FiftyNine.EfCore.InterceptorDemo.Web.Pages.IndexModel
+@{
+    ViewData["Title"] = "Home";
+    var theme = Model.Theme;
+}
+
+<div class="hero">
+    @if (User.Identity?.IsAuthenticated == true)
+    {
+        <h1>@theme.Emoji Welcome back, @User.Identity.Name</h1>
+    }
+    else
+    {
+        <h1>@theme.Emoji Welcome to @theme.Name</h1>
+    }
+    <p>@theme.Tagline</p>
+</div>
+
+<div class="page-heading">
+    <h2>Shop by category</h2>
+</div>
+
+@if (Model.Categories.Count == 0)
+{
+    <p class="empty-state">No categories found for this tenant yet.</p>
+}
+else
+{
+    <div class="category-grid">
+        @foreach (var category in Model.Categories)
+        {
+            <a class="category-card" asp-page="/Category" asp-route-id="@category.Id">@category.Name</a>
+        }
+    </div>
+}

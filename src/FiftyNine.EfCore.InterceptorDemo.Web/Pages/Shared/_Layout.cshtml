@@ -1,0 +1,41 @@
+@using FiftyNine.EfCore.InterceptorDemo.Web.Data
+@inject IUserContext UserContext
+@{
+    var theme = ShopThemes.For(UserContext.CurrentTenant);
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@ViewData["Title"] - @theme.Name</title>
+    <link rel="stylesheet" href="~/css/site.css" />
+</head>
+<body style="--color-primary: @theme.Primary; --color-primary-dark: @theme.PrimaryDark; --color-bg: @theme.Bg;">
+    <header class="site-header">
+        <nav class="site-nav">
+            <a class="brand" asp-page="/Index">@theme.Emoji @theme.Name</a>
+            <div class="nav-links">
+                @if (User.Identity?.IsAuthenticated == true)
+                {
+                    <span>Hi, @User.Identity.Name</span>
+                    @if (User.HasClaim("IsAdmin", "True"))
+                    {
+                        <a class="button secondary" asp-page="/Admin/Index">Admin</a>
+                    }
+                    <form method="post" asp-page="/Index" asp-page-handler="Logout">
+                        <button type="submit" class="button secondary">Log out</button>
+                    </form>
+                }
+                else
+                {
+                    <a class="button" asp-page="/Login">Log in</a>
+                }
+            </div>
+        </nav>
+    </header>
+    <main class="container">
+        @RenderBody()
+    </main>
+</body>
+</html>

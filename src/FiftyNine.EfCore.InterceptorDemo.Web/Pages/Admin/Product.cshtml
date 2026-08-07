@@ -1,0 +1,33 @@
+@page "/Admin/Categories/{categoryId:int}/Products/{id:int}"
+@model FiftyNine.EfCore.InterceptorDemo.Web.Pages.Admin.ProductModel
+@{
+    ViewData["Title"] = "Admin";
+}
+
+<div class="page-heading">
+    <h1>Admin &middot; Edit product</h1>
+    <a asp-page="/Admin/Category" asp-route-id="@Model.CategoryId">&larr; Back to products</a>
+</div>
+
+<div class="login-card">
+    <form method="post">
+        <input type="hidden" asp-for="Id" />
+        <input type="hidden" asp-for="CategoryId" />
+        <div class="field">
+            <label asp-for="Name">Name</label>
+            <input asp-for="Name" />
+        </div>
+        <button type="submit">Save</button>
+    </form>
+
+    <p class="hint">
+        @if (Model.LastModifiedBy is { Length: > 0 })
+        {
+            <text>Last modified by <strong>@Model.LastModifiedBy</strong> @Model.LastModifiedAt!.Value.ToLocalTime().ToString("yyyy-MM-dd HH:mm")</text>
+        }
+        else
+        {
+            <text>Not modified yet.</text>
+        }
+    </p>
+</div>

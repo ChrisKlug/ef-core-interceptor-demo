@@ -1,0 +1,23 @@
+@page
+@model FiftyNine.EfCore.InterceptorDemo.Web.Pages.Admin.IndexModel
+@{
+    ViewData["Title"] = "Admin";
+}
+
+<div class="page-heading">
+    <h1>Admin &middot; Categories</h1>
+</div>
+
+@if (Model.Categories.Count == 0)
+{
+    <p class="empty-state">No categories found.</p>
+}
+else
+{
+    <div class="category-grid">
+        @foreach (var category in Model.Categories)
+        {
+            <a class="category-card" asp-page="/Admin/Category" asp-route-id="@category.Id">@category.Name</a>
+        }
+    </div>
+}

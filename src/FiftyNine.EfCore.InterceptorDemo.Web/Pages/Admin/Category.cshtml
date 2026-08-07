@@ -1,0 +1,37 @@
+@page "/Admin/Categories/{id:int}"
+@model FiftyNine.EfCore.InterceptorDemo.Web.Pages.Admin.CategoryModel
+@{
+    ViewData["Title"] = "Admin";
+}
+
+<div class="page-heading">
+    <h1>Admin &middot; @(Model.Category?.Name ?? "Category")</h1>
+    <a asp-page="/Admin/Index">&larr; Back to categories</a>
+</div>
+
+@if (Model.Products.Length == 0)
+{
+    <p class="empty-state">No products in this category yet.</p>
+}
+else
+{
+    <div class="category-grid">
+        @foreach (var product in Model.Products)
+        {
+            <a class="category-card" asp-page="/Admin/Product" asp-route-categoryId="@Model.Category!.Id" asp-route-id="@product.Id">
+                <div>@product.Name</div>
+                <div class="hint">@product.Price.ToString("C")</div>
+                <div class="hint modification">
+                    @if (product.LastModifiedBy is { Length: > 0 })
+                    {
+                        <text>Modified by <strong>@product.LastModifiedBy</strong><br />@product.LastModifiedAt.ToLocalTime().ToString("yyyy-MM-dd HH:mm")</text>
+                    }
+                    else
+                    {
+                        <text>Not modified yet.</text>
+                    }
+                </div>
+            </a>
+        }
+    </div>
+}

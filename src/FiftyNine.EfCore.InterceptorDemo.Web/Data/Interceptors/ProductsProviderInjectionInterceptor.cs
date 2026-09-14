@@ -22,5 +22,4 @@ public class ProductsProviderInjectionInterceptor : IMaterializationInterceptor
     }
 
     public static ProductsProviderInjectionInterceptor Instance { get; } = new ProductsProviderInjectionInterceptor();
-
 }

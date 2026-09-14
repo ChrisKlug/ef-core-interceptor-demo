@@ -1,5 +1,3 @@
-using System.Reflection;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 
 namespace FiftyNine.EfCore.InterceptorDemo.Web.Data.Interceptors;

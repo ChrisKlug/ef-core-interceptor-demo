@@ -10,26 +10,23 @@ public class ChangeTrackingInterceptor(IUserContext userContext, TimeProvider ti
         InterceptionResult<int> result,
         CancellationToken cancellationToken = default)
     {
-        var context = eventData.Context;
-        if (context is not null)
-        {
-            UpdateAuditProperties(context, userContext, timeProvider);
-        }
+        UpdateAuditProperties(eventData.Context, userContext, timeProvider);
         return ValueTask.FromResult(result);
     }
     
     public InterceptionResult<int> SavingChanges(DbContextEventData eventData, InterceptionResult<int> result)
     {
-        var context = eventData.Context;
-        if (context is not null)
-        {
-            UpdateAuditProperties(context, userContext, timeProvider);
-        }
+        UpdateAuditProperties(eventData.Context, userContext, timeProvider);
         return result;
     }
 
-    private static void UpdateAuditProperties(DbContext context, IUserContext userContext, TimeProvider timeProvider)
+    private static void UpdateAuditProperties(DbContext? context, IUserContext userContext, TimeProvider timeProvider)
     {
+        if (context is null)
+        {
+            return;
+        }
+
         var entries = context.ChangeTracker.Entries<Product>()
             .Where(e => e.State is EntityState.Added or EntityState.Modified);
 

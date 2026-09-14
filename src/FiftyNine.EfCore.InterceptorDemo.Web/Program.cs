@@ -2,6 +2,7 @@ using FiftyNine.EfCore.InterceptorDemo.Web;
 using FiftyNine.EfCore.InterceptorDemo.Web.Data;
 using FiftyNine.EfCore.InterceptorDemo.Web.Data.Interceptors;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,19 +10,17 @@ builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddSingleton<IUsers, InMemoryUsers>();
 builder.Services.AddSingleton<IUserContext, HttpContextUserContext>();
+builder.Services.AddScoped<IInterceptor, ChangeTrackingInterceptor>();
 builder.Services.AddHostedService<MigrationRunnerService>();
 builder.Services.AddHostedService<SeedDataService>();
 
 builder.Services.AddDbContext<DemoDbContext>((sp, options) => {
     options.UseSqlServer(builder.Configuration.GetConnectionString("default"))
-           .AddInterceptors(
+            .AddInterceptors(sp.GetServices<IInterceptor>())
+            .AddInterceptors(
                 new UserContextConnectionInterceptor(
                     sp.GetRequiredService<IUserContext>(),
-                    section => builder.Configuration.GetConnectionString(section.ToString())!
-                ),
-                new ChangeTrackingInterceptor(
-                    sp.GetRequiredService<IUserContext>(),
-                    TimeProvider.System
+                    tenant => builder.Configuration.GetConnectionString(tenant.ToString())!
                 ),
                 ProductsProviderInjectionInterceptor.Instance
                 // ProductsProviderPropertyInterceptor.Instance
